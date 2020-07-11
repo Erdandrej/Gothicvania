@@ -22,8 +22,11 @@ var motion = Vector2.ZERO
 onready var sprite = $Sprite
 onready var shape = $Shape
 onready var animationPlayer = $AnimationPlayer
+onready var hitboxPivot = $HitboxPivot
 
 func _physics_process(delta):
+	if global_position.y >= 250:
+		death()
 	match state:
 		MOVE:
 			move_state(delta)
@@ -45,6 +48,10 @@ func move_state(delta):
 		motion.x += x_input * ACCELERATION * delta * TARGET_FPS
 		motion.x = clamp(motion.x, -MAX_SPEED, MAX_SPEED)
 		sprite.flip_h = x_input < 0
+		if x_input < 0:
+			hitboxPivot.scale.x = -1
+		else:
+			hitboxPivot.scale.x = 1
 	else:
 		animation = "Idle"
 		
@@ -94,3 +101,6 @@ func crouch_state(delta):
 	
 func dodge_state(delta):
 	pass
+	
+func death():
+	queue_free()
