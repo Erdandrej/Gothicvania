@@ -15,9 +15,9 @@ onready var blinkAnimationPlayer = $BlinkAnimationPlayer
 func _ready():
 	animationPlayer.play("Idle")
 	
-func _physics_process(delta):
+func _physics_process(_delta):
 	if health <= 0:
-		queue_free()
+		death()
 	if ray.is_colliding():
 		attack()
 		
@@ -37,7 +37,12 @@ func create_projectile():
 		fireball.direction = Vector2.RIGHT
 	main.add_child(fireball)
 	fireball.global_position = projectileSpawn.global_position
-	
+
+func death():
+	animationPlayer.play("Death")
+	yield(animationPlayer, "animation_finished")
+	queue_free()
+
 func _on_HurtBox_area_entered(area):
 	health -= area.damage
 	hurtbox.start_invincibility(0.25)
