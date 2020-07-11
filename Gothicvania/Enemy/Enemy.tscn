@@ -4,17 +4,16 @@
 [ext_resource path="res://Enemy/Enemy.gd" type="Script" id=2]
 [ext_resource path="res://Overlap/HurtBox.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Overlap/Hitbox.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Blink.shader" type="Shader" id=5]
+[ext_resource path="res://Effects/Blink.shader" type="Shader" id=5]
 
-[sub_resource type="ShaderMaterial" id=6]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 5 )
 shader_param/active = false
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 4, 9 )
 
-[sub_resource type="Animation" id=2]
-resource_name = "Attack"
+[sub_resource type="Animation" id=3]
 length = 0.9
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -43,7 +42,7 @@ tracks/1/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=4]
 resource_name = "Death"
 length = 0.8
 tracks/0/type = "value"
@@ -59,8 +58,7 @@ tracks/0/keys = {
 "values": [ 15, 16, 17, 18, 19, 20, 21, 22, 23 ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "Idle"
+[sub_resource type="Animation" id=5]
 length = 0.6
 loop = true
 tracks/0/type = "value"
@@ -76,15 +74,14 @@ tracks/0/keys = {
 "values": [ 0, 1, 2, 3, 4, 5 ]
 }
 
-[sub_resource type="CapsuleShape2D" id=5]
+[sub_resource type="CapsuleShape2D" id=6]
 radius = 9.0
 
-[sub_resource type="CapsuleShape2D" id=4]
+[sub_resource type="CapsuleShape2D" id=7]
 radius = 6.0
 height = 24.0
 
-[sub_resource type="Animation" id=7]
-resource_name = "Start"
+[sub_resource type="Animation" id=8]
 length = 0.2
 loop = true
 tracks/0/type = "value"
@@ -100,8 +97,7 @@ tracks/0/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="Animation" id=8]
-resource_name = "Stop"
+[sub_resource type="Animation" id=9]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:material:shader_param/active")
@@ -122,15 +118,15 @@ script = ExtResource( 2 )
 health = 6
 
 [node name="Sprite" type="Sprite" parent="."]
-material = SubResource( 6 )
+material = SubResource( 1 )
 position = Vector2( 0, -31 )
 texture = ExtResource( 1 )
 hframes = 24
-frame = 23
 
 [node name="Shape" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( -1, -9 )
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
 position = Vector2( -1, -20 )
@@ -144,19 +140,20 @@ visible = false
 position = Vector2( -32, -32 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/Attack = SubResource( 2 )
-anims/Death = SubResource( 9 )
-anims/Idle = SubResource( 3 )
+anims/Attack = SubResource( 3 )
+anims/Death = SubResource( 4 )
+anims/Idle = SubResource( 5 )
 
 [node name="Timer" type="Timer" parent="."]
 
 [node name="HurtBox" parent="." instance=ExtResource( 3 )]
+visible = false
 collision_layer = 16
 collision_mask = 0
 
 [node name="CollisionShape2D" parent="HurtBox" index="0"]
 position = Vector2( -1, -21 )
-shape = SubResource( 5 )
+shape = SubResource( 6 )
 
 [node name="Hitbox" parent="." instance=ExtResource( 4 )]
 visible = false
@@ -165,11 +162,11 @@ collision_mask = 8
 
 [node name="CollisionShape2D" parent="Hitbox" index="0"]
 position = Vector2( -1, -20 )
-shape = SubResource( 4 )
+shape = SubResource( 7 )
 
 [node name="BlinkAnimationPlayer" type="AnimationPlayer" parent="."]
-anims/Start = SubResource( 7 )
-anims/Stop = SubResource( 8 )
+anims/Start = SubResource( 8 )
+anims/Stop = SubResource( 9 )
 [connection signal="area_entered" from="HurtBox" to="." method="_on_HurtBox_area_entered"]
 [connection signal="invincibility_ended" from="HurtBox" to="." method="_on_HurtBox_invincibility_ended"]
 [connection signal="invincibility_started" from="HurtBox" to="." method="_on_HurtBox_invincibility_started"]
