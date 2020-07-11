@@ -16,6 +16,7 @@ enum {
 }
 
 var state = MOVE
+var animation = "Idle"
 var motion = Vector2.ZERO
 
 onready var sprite = $Sprite
@@ -29,22 +30,23 @@ func _physics_process(delta):
 		ATTACK:
 			attack_state(delta)
 		CROUCH:
-			pass
+			crouch_state(delta)
 		DODGE:
-			pass
+			dodge_state(delta)
 	
 func move_state(delta):
 	if Input.is_action_just_pressed("attack"):
 		state = ATTACK
+		
 	var x_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 	
 	if x_input != 0:
-		animationPlayer.play("Run")
+		animation = "Run"
 		motion.x += x_input * ACCELERATION * delta * TARGET_FPS
 		motion.x = clamp(motion.x, -MAX_SPEED, MAX_SPEED)
 		sprite.flip_h = x_input < 0
 	else:
-		animationPlayer.play("Idle")
+		animation = "Idle"
 		
 		
 	motion.y += GRAVITY * delta * TARGET_FPS
@@ -58,17 +60,21 @@ func move_state(delta):
 
 	else:
 		if Input.is_action_pressed("attack"):
-			animationPlayer.play("JumpKick")
+			animation = "JumpKick"
 		else:
-			animationPlayer.play("Jump")
+			if motion.y < 0 :
+				animation = "Jump"
+			else:
+				animation = "Fall"
 			
 		if Input.is_action_just_released("jump") and motion.y < -JUMP_FORCE/2:
 			motion.y = -JUMP_FORCE/2
 		
 		if x_input == 0:
 			motion.x = lerp(motion.x, 0, AIR_RESISTANCE * delta)
-			
-	move(motion)
+	
+	animationPlayer.play(animation)
+	motion = move_and_slide(motion, Vector2.UP)
 
 func attack_state(delta):
 	if is_on_floor():
@@ -83,5 +89,8 @@ func attack_state(delta):
 		
 	state = MOVE
 
-func move(motion):
-	motion = move_and_slide(motion, Vector2.UP)
+func crouch_state(delta):
+	pass
+	
+func dodge_state(delta):
+	pass
