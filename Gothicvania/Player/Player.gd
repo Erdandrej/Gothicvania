@@ -2,11 +2,11 @@ extends KinematicBody2D
 
 const TARGET_FPS = 60
 export var ACCELERATION = 8
-export var MAX_SPEED = 64
+export var MAX_SPEED = 80
 export var FRICTION = 10
 export var AIR_RESISTANCE = 1
 export var GRAVITY = 4
-export var JUMP_FORCE = 140
+export var JUMP_FORCE = 180
 
 enum {
 	MOVE,
@@ -15,6 +15,7 @@ enum {
 	DODGE
 }
 
+export var health = 3
 var state = MOVE
 var animation = "Idle"
 var motion = Vector2.ZERO
@@ -23,9 +24,11 @@ onready var sprite = $Sprite
 onready var shape = $Shape
 onready var animationPlayer = $AnimationPlayer
 onready var hitboxPivot = $HitboxPivot
+onready var hurtbox = $HurtBox
+onready var blinkAnimationPlayer = $BlinkAnimationPlayer
 
 func _physics_process(delta):
-	if global_position.y >= 250:
+	if global_position.y >= 250 or health <= 0:
 		death()
 	match state:
 		MOVE:
@@ -104,3 +107,14 @@ func dodge_state(delta):
 	
 func death():
 	queue_free()
+
+func _on_HurtBox_area_entered(area):
+	health -= area.damage
+	hurtbox.start_invincibility(0.5)
+
+func _on_HurtBox_invincibility_started():
+	blinkAnimationPlayer.play("Start")
+
+
+func _on_HurtBox_invincibility_ended():
+	blinkAnimationPlayer.play("Stop")

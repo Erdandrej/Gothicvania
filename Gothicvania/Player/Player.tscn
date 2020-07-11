@@ -1,8 +1,14 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Player/MonkSprite-Sheet.png" type="Texture" id=1]
 [ext_resource path="res://Overlap/Hitbox.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Overlap/HurtBox.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Blink.shader" type="Shader" id=4]
 [ext_resource path="res://Player/Player.gd" type="Script" id=5]
+
+[sub_resource type="ShaderMaterial" id=15]
+shader = ExtResource( 4 )
+shader_param/active = false
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 5, 22 )
@@ -385,18 +391,56 @@ tracks/1/keys = {
 [sub_resource type="CapsuleShape2D" id=12]
 height = 10.0
 
+[sub_resource type="CapsuleShape2D" id=13]
+radius = 5.0
+height = 24.0
+
+[sub_resource type="Animation" id=16]
+resource_name = "Start"
+length = 0.2
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:material:shader_param/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[sub_resource type="Animation" id=17]
+resource_name = "Stop"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:material:shader_param/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
 [node name="Player" type="KinematicBody2D"]
+collision_layer = 2
 script = ExtResource( 5 )
-MAX_SPEED = 80
-JUMP_FORCE = 180
 
 [node name="Sprite" type="Sprite" parent="."]
+material = SubResource( 15 )
 position = Vector2( 0, -32 )
 texture = ExtResource( 1 )
 hframes = 36
 frame = 4
 
 [node name="Shape" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 0, -22 )
 shape = SubResource( 1 )
 
@@ -415,6 +459,8 @@ anims/Run = SubResource( 10 )
 [node name="HitboxPivot" type="Position2D" parent="."]
 
 [node name="Hitbox" parent="HitboxPivot" instance=ExtResource( 2 )]
+collision_layer = 2147483648
+collision_mask = 16
 
 [node name="CollisionShape2D" parent="HitboxPivot/Hitbox" index="0"]
 position = Vector2( 32, -29 )
@@ -422,4 +468,21 @@ rotation = 1.5708
 shape = SubResource( 12 )
 disabled = true
 
+[node name="HurtBox" parent="." instance=ExtResource( 3 )]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+position = Vector2( 0, -24 )
+shape = SubResource( 13 )
+
+[node name="BlinkAnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Start = SubResource( 16 )
+anims/Stop = SubResource( 17 )
+[connection signal="area_entered" from="HurtBox" to="." method="_on_HurtBox_area_entered"]
+[connection signal="invincibility_ended" from="HurtBox" to="." method="_on_HurtBox_invincibility_ended"]
+[connection signal="invincibility_started" from="HurtBox" to="." method="_on_HurtBox_invincibility_started"]
+
 [editable path="HitboxPivot/Hitbox"]
+
+[editable path="HurtBox"]

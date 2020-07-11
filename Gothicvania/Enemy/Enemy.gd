@@ -1,17 +1,23 @@
 extends Node2D
 
 var Fireball = preload("res://Effects/Fireball.tscn")
+ 
+export var health = 3
 
 onready var sprite = $Sprite
 onready var animationPlayer = $AnimationPlayer
 onready var ray = $RayCast2D
 onready var projectileSpawn = $ProjectileSpawn
 onready var timer = $Timer
+onready var hurtbox = $HurtBox
+onready var blinkAnimationPlayer = $BlinkAnimationPlayer
 
 func _ready():
 	animationPlayer.play("Idle")
 	
 func _physics_process(delta):
+	if health <= 0:
+		queue_free()
 	if ray.is_colliding():
 		attack()
 		
@@ -32,3 +38,12 @@ func create_projectile():
 	main.add_child(fireball)
 	fireball.global_position = projectileSpawn.global_position
 	
+func _on_HurtBox_area_entered(area):
+	health -= area.damage
+	hurtbox.start_invincibility(0.25)
+
+func _on_HurtBox_invincibility_started():
+	blinkAnimationPlayer.play("Start")
+
+func _on_HurtBox_invincibility_ended():
+	blinkAnimationPlayer.play("Stop")
