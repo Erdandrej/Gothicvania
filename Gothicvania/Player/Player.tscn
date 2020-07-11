@@ -162,7 +162,7 @@ JUMP_FORCE = 180
 position = Vector2( 0, -32 )
 texture = ExtResource( 1 )
 hframes = 36
-frame = 23
+frame = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -21 )
