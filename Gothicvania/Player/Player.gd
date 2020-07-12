@@ -19,6 +19,7 @@ export var health = 3
 var state = MOVE
 var animation = "Idle"
 var motion = Vector2.ZERO
+var crouched = false
 
 onready var sprite = $Sprite
 onready var shape = $Shape
@@ -43,6 +44,11 @@ func _physics_process(delta):
 func move_state(delta):
 	if Input.is_action_just_pressed("attack"):
 		state = ATTACK
+	
+	if Input.get_action_strength("ui_down") >= 0.5 and is_on_floor():
+		crouched = true
+	else:
+		crouched = false
 		
 	var x_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 	
@@ -67,7 +73,7 @@ func move_state(delta):
 			
 		if Input.is_action_just_pressed("jump"):
 			motion.y = -JUMP_FORCE
-
+			
 	else:
 		if Input.is_action_pressed("attack"):
 			animation = "JumpKick"
@@ -83,6 +89,10 @@ func move_state(delta):
 		if x_input == 0:
 			motion.x = lerp(motion.x, 0, AIR_RESISTANCE * delta)
 	
+	if crouched:
+		animation = "Crouch"
+		motion = Vector2.ZERO
+		
 	animationPlayer.play(animation)
 	motion = move_and_slide(motion, Vector2.UP)
 
@@ -100,7 +110,10 @@ func attack_state(delta):
 	state = MOVE
 
 func crouch_state(delta):
-	pass
+	if is_on_floor():
+		crouched = !crouched
+			
+	state = MOVE
 	
 func dodge_state(delta):
 	pass

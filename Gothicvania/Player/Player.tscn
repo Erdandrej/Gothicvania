@@ -12,10 +12,9 @@ shader_param/active = false
 
 [sub_resource type="CapsuleShape2D" id=2]
 radius = 4.0
-height = 36.0
 
 [sub_resource type="Animation" id=3]
-length = 0.2
+length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -23,10 +22,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ 27, 28 ]
+"values": [ 28 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("HitboxPivot/Hitbox/CollisionShape2D:disabled")
@@ -39,6 +38,30 @@ tracks/1/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ true ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Shape:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, -14 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Shape:shape:height")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 20.0 ]
 }
 
 [sub_resource type="Animation" id=4]
@@ -174,6 +197,30 @@ tracks/1/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ true ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Shape:shape:height")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 36.0 ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Shape:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, -22 ) ]
 }
 
 [sub_resource type="Animation" id=8]
@@ -435,10 +482,10 @@ material = SubResource( 1 )
 position = Vector2( 0, -32 )
 texture = ExtResource( 1 )
 hframes = 36
-frame = 4
+frame = 27
 
 [node name="Shape" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -22 )
+position = Vector2( 0, -14 )
 shape = SubResource( 2 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
