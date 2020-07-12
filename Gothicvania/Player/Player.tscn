@@ -10,8 +10,9 @@
 shader = ExtResource( 4 )
 shader_param/active = false
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 5, 22 )
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 4.0
+height = 36.0
 
 [sub_resource type="Animation" id=3]
 length = 0.2
@@ -437,7 +438,6 @@ hframes = 36
 frame = 4
 
 [node name="Shape" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2( 0, -22 )
 shape = SubResource( 2 )
 
@@ -466,6 +466,7 @@ shape = SubResource( 13 )
 disabled = true
 
 [node name="HurtBox" parent="." instance=ExtResource( 3 )]
+visible = false
 collision_layer = 8
 collision_mask = 0
 
